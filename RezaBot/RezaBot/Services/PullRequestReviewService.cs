@@ -7,13 +7,13 @@ using System.Web;
 
 namespace RezaBot.Services
 {
-    public class PullRequestReviewService
+    public class PullRequestReviewService : IPullRequestReviewService
     {
-        private GithubService _gitService;
+        private IGitService _gitService;
 
-        public PullRequestReviewService()
+        public PullRequestReviewService(IGitService gitService)
         {
-            _gitService = new GithubService();
+            _gitService = gitService;
         }
 
         public void ReviewPullRequest(int prNumber)

@@ -3,7 +3,10 @@ using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
 using Newtonsoft.Json;
+using Ninject;
 using RezaBot.Dialogs;
+using RezaBot.Modules;
+using RezaBot.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +21,14 @@ namespace RezaBot
     [BotAuthentication]
     public class MessagesController : ApiController
     {
+        private IPullRequestReviewService _reviewService;
+
+        public MessagesController()
+        {
+            var kernel = new StandardKernel(new NinjectBotModule());
+            _reviewService = kernel.Get<IPullRequestReviewService>();
+        }
+
         /// <summary>
         /// POST: api/Messages
         /// Receive a message from a user and reply to it

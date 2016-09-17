@@ -9,7 +9,7 @@ using System.Web;
 
 namespace RezaBot.Services
 {
-    public class GithubService
+    public class GithubService : IGitService
     {
         protected bool DebugMode = true;
         protected string Token = ConfigurationManager.AppSettings["Github-Token"];
