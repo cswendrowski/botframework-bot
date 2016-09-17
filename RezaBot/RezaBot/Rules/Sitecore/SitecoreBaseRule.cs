@@ -10,10 +10,6 @@ namespace RezaBot.Rules
 {
     public abstract class SitecoreBaseRule : Rule
     {
-        public SitecoreBaseRule(IGitService gitService) : base(gitService)
-        {
-        }
-
         public override bool Evaluate(int prNumber, ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, List<CodeLine> allLines)
         {
             if (!file.FileName.Contains("GlassItems"))

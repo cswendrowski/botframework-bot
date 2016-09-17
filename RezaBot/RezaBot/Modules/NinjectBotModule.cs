@@ -13,7 +13,12 @@ namespace RezaBot.Modules
 
             Bind<IGitService>().To<GithubService>();
 
+            // Rules
+            Bind<IRule>().To<Brackets>();
             Bind<IRule>().To<EndOfLine>();
+            Bind<IRule>().To<ExtraNewLine>();
+            Bind<IRule>().To<Scss0px>();
+            Bind<IRule>().To<Whitespaces>();
         }
     }
 }
