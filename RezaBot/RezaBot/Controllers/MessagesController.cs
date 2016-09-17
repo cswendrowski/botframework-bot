@@ -21,14 +21,6 @@ namespace RezaBot
     [BotAuthentication]
     public class MessagesController : ApiController
     {
-        private IPullRequestReviewService _reviewService;
-
-        public MessagesController()
-        {
-            var kernel = new StandardKernel(new NinjectBotModule());
-            _reviewService = kernel.Get<IPullRequestReviewService>();
-        }
-
         /// <summary>
         /// POST: api/Messages
         /// Receive a message from a user and reply to it

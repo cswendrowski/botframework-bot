@@ -1,4 +1,5 @@
-﻿using Octokit;
+﻿using Microsoft.Bot.Builder.Dialogs;
+using Octokit;
 using RestSharp;
 using RezaBot.Models;
 using System;
@@ -11,10 +12,11 @@ namespace RezaBot.Services
 {
     public class GithubService : IGitService
     {
-        protected bool DebugMode = true;
         protected string Token = ConfigurationManager.AppSettings["Github-Token"];
         protected string RepositoryName = ConfigurationManager.AppSettings["Repository-Name"];
         protected string RepositoryOwner = ConfigurationManager.AppSettings["Repository-Owner"];
+
+        public IDialogContext ConversationContext { get; set; }
 
         private GitHubClient GetClient()
         {
@@ -32,9 +34,9 @@ namespace RezaBot.Services
         {
             message = "@" + GetPrAuthor(prNumber) + " " + message;
 
-            if (DebugMode)
+            if (ConversationContext != null)
             {
-                Console.WriteLine(string.Format("PR {0} - File {1} Line {2}: {3}", prNumber, file.FileName, line.LineNumber, message));
+                await ConversationContext.PostAsync(string.Format("PR {0} - File {1} Line {2}: {3}", prNumber, file.FileName, line.LineNumber, message));
                 return;
             }
 
@@ -50,9 +52,9 @@ namespace RezaBot.Services
         {
             message = "@" + GetPrAuthor(prNumber) + " " + message;
 
-            if (DebugMode)
+            if (ConversationContext != null)
             {
-                Console.WriteLine(string.Format("PR {0} - General Comment: {1}", prNumber, message));
+                await ConversationContext.PostAsync(string.Format("PR {0} - General Comment: {1}", prNumber, message));
                 return;
             }
 

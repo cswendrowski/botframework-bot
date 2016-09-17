@@ -1,4 +1,5 @@
-﻿using RezaBot.Models;
+﻿using Microsoft.Bot.Builder.Dialogs;
+using RezaBot.Models;
 using RezaBot.Rules;
 using System;
 using System.Collections.Generic;
@@ -19,15 +20,17 @@ namespace RezaBot.Services
             _rules = rules;
         }
 
-        public void ReviewPullRequest(int prNumber)
+        public void ReviewPullRequest(int prNumber, IDialogContext context = null)
         {
             var files = _gitService.DownloadPrFiles(prNumber);
 
-            NitpickFiles(files, prNumber);
+            NitpickFiles(files, prNumber, context);
         }
 
-        private void NitpickFiles(List<ChangedFile> files, int prNumber)
+        private void NitpickFiles(List<ChangedFile> files, int prNumber, IDialogContext context = null)
         {
+            _gitService.ConversationContext = context;
+
             var issueWasFound = false;
 
             foreach (var file in files)

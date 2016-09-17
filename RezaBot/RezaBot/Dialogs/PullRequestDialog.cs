@@ -1,6 +1,9 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
+using Ninject;
+using RezaBot.Modules;
+using RezaBot.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -57,14 +60,19 @@ namespace RezaBot.Dialogs
             var confirm = await argument;
             var number = context.ConversationData.Get<int>("prNumber");
 
+            var kernel = new StandardKernel(new NinjectBotModule());
+            var reviewService = kernel.Get<IPullRequestReviewService>();
+
             switch (confirm)
             {
                 case PrReviewOptions.Yes:
-                    await context.PostAsync("Will someday review PR " + number + ".");
+                    await context.PostAsync("Starting review of PR " + number + ".");
+                    reviewService.ReviewPullRequest(number);
                     break;
 
                 case PrReviewOptions.Preview:
-                    await context.PostAsync("Will someday preview PR " + number + ".");
+                    await context.PostAsync("Starting preview of PR " + number + ".");
+                    reviewService.ReviewPullRequest(number, context);
                     break;
 
                 case PrReviewOptions.No:
