@@ -25,15 +25,15 @@ namespace RezaBot
         {
             if (activity.Type == ActivityTypes.Message)
             {
-                //ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                //// calculate something for us to return
-                //int length = (activity.Text ?? string.Empty).Length;
+                ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
+                // calculate something for us to return
+                int length = (activity.Text ?? string.Empty).Length;
 
-                //// return our reply to the user
-                //Activity reply = activity.CreateReply($"You sent \"{activity.Text}\" which was {length} characters long");
-                //await connector.Conversations.ReplyToActivityAsync(reply);
+                // return our reply to the user
+                Activity reply = activity.CreateReply($"You sent \"{activity.Text}\" which was {length} characters long");
+                await connector.Conversations.ReplyToActivityAsync(reply);
 
-                await Conversation.SendAsync(activity, () => new PrDialog());
+                //await Conversation.SendAsync(activity, () => new PrDialog());
             }
             else
             {
@@ -94,13 +94,36 @@ public class PrDialog : LuisDialog<object>
 
         if (TryFindPrNumber(result, out number))
         {
-            message = $"You want me to analyze PR " + number + "? I see. That is coming soon!";
+            context.ConversationData.SetValue("prNumber", number);
+
+            PromptDialog.Confirm(
+                context,
+                AfterPRConfirm,
+                "Are you sure you want me to review PR " + number + "? Answering \"No\" will let you preview the PR review instead.",
+                "Didn't get that, sorry!",
+                promptStyle: PromptStyle.Auto);
         }
         else
         {
             message = $"I'm sorry, please include a PR number that you want me to analyze. Thanks!";
         }
         await context.PostAsync(message);
+        context.Wait(MessageReceived);
+    }
+
+    public async Task AfterPRConfirm(IDialogContext context, IAwaitable<bool> argument)
+    {
+        var confirm = await argument;
+        var number = context.ConversationData.Get<int>("prNumber");
+
+        if (confirm)
+        {
+            await context.PostAsync("Will someday review PR " + number + ".");
+        }
+        else
+        {
+            await context.PostAsync("Did not review PR " + number + ".");
+        }
         context.Wait(MessageReceived);
     }
 
