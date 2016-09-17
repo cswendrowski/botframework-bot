@@ -1,4 +1,5 @@
 ﻿using RezaBot.Models;
+using RezaBot.Rules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,12 @@ namespace RezaBot.Services
     public class PullRequestReviewService : IPullRequestReviewService
     {
         private IGitService _gitService;
+        private IRule[] _rules;
 
-        public PullRequestReviewService(IGitService gitService)
+        public PullRequestReviewService(IGitService gitService, IRule[] rules)
         {
             _gitService = gitService;
+            _rules = rules;
         }
 
         public void ReviewPullRequest(int prNumber)
@@ -27,7 +30,7 @@ namespace RezaBot.Services
         {
             var issueWasFound = false;
 
-            foreach (var file in files.Where(x => !x.FileName.Contains("GlassItems")))
+            foreach (var file in files)
             {
                 if (file.ChangedLines == null || !file.ChangedLines.Any())
                 {
@@ -35,18 +38,12 @@ namespace RezaBot.Services
                     continue;
                 }
 
-                var addedLines = file.ChangedLines.Where(x => x.WasAdded);
-                var removedLines = file.ChangedLines.Where(x => x.WasDeleted);
+                var addedLines = file.ChangedLines.Where(x => x.WasAdded).ToList();
+                var removedLines = file.ChangedLines.Where(x => x.WasDeleted).ToList();
 
-                // Check for EOL newline
-                if (addedLines.Any(x => x.Line.Contains("No newline at end of file")))
+                foreach (var rule in _rules)
                 {
-                    _gitService.WriteComment(file, file.ChangedLines.Last(), "Please add a newline at the End of the File, thanks!", prNumber);
-                    issueWasFound = true;
-                }
-                else if (removedLines.Any(x => x.Line.Contains("No newline at end of file")))
-                {
-                    _gitService.WriteComment(file, file.ChangedLines.Last(), "Thanks for adding a newline at the End of File!", prNumber);
+                    rule.Evaluate(prNumber, file, addedLines, removedLines, file.ChangedLines);
                 }
 
                 // Check for brackets that aren't on a new line in non-excluded files

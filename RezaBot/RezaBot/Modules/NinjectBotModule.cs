@@ -1,4 +1,6 @@
 ﻿using Ninject.Modules;
+using RezaBot.Rules;
+using RezaBot.Rules.Sitecore;
 using RezaBot.Services;
 
 namespace RezaBot.Modules
@@ -10,6 +12,8 @@ namespace RezaBot.Modules
             Bind<IPullRequestReviewService>().To<PullRequestReviewService>();
 
             Bind<IGitService>().To<GithubService>();
+
+            Bind<IRule>().To<EndOfLine>();
         }
     }
 }
