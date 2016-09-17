@@ -12,13 +12,9 @@ namespace RezaBot.Services
     public class GithubService
     {
         protected bool DebugMode = true;
-        //protected string Token = ConfigurationManager.AppSettings["Github-Token"];
-        //protected string RepositoryName = ConfigurationManager.AppSettings["Repository-Name"];
-        //protected string RepositoryOwner = ConfigurationManager.AppSettings["Repository-Owner"];
-
-        protected string Token = string.Empty;
-        protected string RepositoryName = string.Empty;
-        protected string RepositoryOwner = string.Empty;
+        protected string Token = ConfigurationManager.AppSettings["Github-Token"];
+        protected string RepositoryName = ConfigurationManager.AppSettings["Repository-Name"];
+        protected string RepositoryOwner = ConfigurationManager.AppSettings["Repository-Owner"];
 
         private GitHubClient GetClient()
         {
