@@ -5,19 +5,28 @@ namespace RezaBot.Rules.Sitecore
 {
     public class Whitespaces : SitecoreBaseRule
     {
-        protected override bool Review(int prNumber, ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, List<CodeLine> allLines)
+        protected override List<CodeComment> Review(ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, out bool issueFound)
         {
+            var messages = new List<CodeComment>();
+            issueFound = false;
+
             // Check for extra whitespaces
             foreach (var changedLine in addedLines)
             {
                 if (changedLine.Line.TrimStart().Contains("  "))
                 {
-                    GitService.WriteComment(file, changedLine, "Please remove the extra white spaces on this line, thanks!", prNumber);
-                    return true;
+                    messages.Add(new CodeComment
+                    {
+                        File = file,
+                        Line = changedLine,
+                        Comment = "Please remove the extra white spaces on this line, thanks!"
+                    });
+
+                    issueFound = true;
                 }
             }
 
-            return false;
+            return messages;
         }
     }
 }

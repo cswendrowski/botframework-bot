@@ -6,8 +6,11 @@ namespace RezaBot.Rules.Sitecore
 {
     public class Scss0px : SitecoreBaseRule
     {
-        protected override bool Review(int prNumber, ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, List<CodeLine> allLines)
+        protected override List<CodeComment> Review(ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, out bool issueFound)
         {
+            var messages = new List<CodeComment>();
+            issueFound = false;
+
             // Check for 0px in .scss files
             if (file.FileType == "scss")
             {
@@ -15,13 +18,19 @@ namespace RezaBot.Rules.Sitecore
                 {
                     if (Regex.IsMatch(changedLine.Line, @"\b0px"))
                     {
-                        GitService.WriteComment(file, changedLine, "Please update `0px` to be `0` in this SCSS rule, thanks!", prNumber);
-                        return true;
+                        messages.Add(new CodeComment
+                        {
+                            File = file,
+                            Line = changedLine,
+                            Comment = "Please update `0px` to be `0` in this SCSS rule, thanks!"
+                        });
+
+                        issueFound = true;
                     }
                 }
             }
 
-            return false;
+            return messages;
         }
     }
 }

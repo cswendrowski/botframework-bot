@@ -6,8 +6,6 @@ namespace RezaBot.Rules.Sitecore
 {
     public abstract class Rule : IRule
     {
-        public IGitService GitService { get; set; }
-
-        public abstract bool Evaluate(int prNumber, ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, List<CodeLine> allLines);
+        public abstract List<CodeComment> Evaluate(ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, out bool issueFound);
     }
 }

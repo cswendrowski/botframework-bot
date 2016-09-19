@@ -8,8 +8,11 @@ namespace RezaBot.Rules.Sitecore
     /// </summary>
     public class Brackets : SitecoreBaseRule
     {
-        protected override bool Review(int prNumber, ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, List<CodeLine> allLines)
+        protected override List<CodeComment> Review(ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, out bool issueFound)
         {
+            var messages = new List<CodeComment>();
+            issueFound = false;
+
             // Check for brackets that aren't on a new line in non-excluded files
             if (file.FileType != "cshtml" && file.FileType != "js" && file.FileType != "item" && !file.FileType.Contains("proj"))
             {
@@ -19,14 +22,20 @@ namespace RezaBot.Rules.Sitecore
                     {
                         if (!string.IsNullOrWhiteSpace(changedLine.Line.Replace("{", "").Replace("}", "")))
                         {
-                            GitService.WriteComment(file, changedLine, "Please update Brackets (`{` and `}`) to be on a new line, thanks!", prNumber);
-                            return true;
+                            messages.Add(new CodeComment
+                            {
+                                File = file,
+                                Line = changedLine,
+                                Comment = "Please update Brackets (`{` and `}`) to be on a new line, thanks!"
+                            });
+
+                            issueFound = true;
                         }
                     }
                 }
             }
 
-            return false;
+            return messages;
         }
     }
 }

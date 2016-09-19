@@ -10,17 +10,23 @@ namespace RezaBot.Rules
 {
     public abstract class SitecoreBaseRule : Rule
     {
-        public override bool Evaluate(int prNumber, ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, List<CodeLine> allLines)
+        public override List<CodeComment> Evaluate(ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, out bool issueFound)
         {
+            var messages = new List<CodeComment>();
+
             if (!file.FileName.Contains("GlassItems"))
             {
-                return Review(prNumber, file, addedLines, removedLines, allLines);
+                messages.AddRange(Review(file, addedLines, removedLines, out issueFound));
+
+                return messages;
             }
 
             // We didn't review the file, so no issues were found
-            return false;
+            issueFound = false;
+
+            return messages;
         }
 
-        protected abstract bool Review(int prNumber, ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, List<CodeLine> allLines);
+        protected abstract List<CodeComment> Review(ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, out bool issueFound);
     }
 }

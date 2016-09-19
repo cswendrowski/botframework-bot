@@ -32,6 +32,7 @@ namespace RezaBot.Services
             _gitService.ConversationContext = context;
 
             var issueWasFound = false;
+            var messages = new List<CodeComment>();
 
             foreach (var file in files)
             {
@@ -46,13 +47,20 @@ namespace RezaBot.Services
 
                 foreach (var rule in _rules)
                 {
-                    rule.GitService = _gitService;
+                    var ruleFoundIssue = false;
 
-                    if (rule.Evaluate(prNumber, file, addedLines, removedLines, file.ChangedLines))
+                    messages.AddRange(rule.Evaluate(file, addedLines, removedLines, out ruleFoundIssue));
+
+                    if (ruleFoundIssue)
                     {
                         issueWasFound = true;
                     }
                 }
+            }
+
+            foreach (var message in messages)
+            {
+                _gitService.WriteComment(message.File, message.Line, message.Comment, prNumber);
             }
 
             if (!issueWasFound)
