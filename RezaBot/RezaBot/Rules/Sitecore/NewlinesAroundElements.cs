@@ -9,6 +9,7 @@ namespace RezaBot.Rules
         protected override List<CodeComment> Review(ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, out bool issueFound)
         {
             var messages = new List<CodeComment>();
+            issueFound = false;
 
             foreach (var changedLine in file.ChangedLines)
             {
@@ -55,7 +56,6 @@ namespace RezaBot.Rules
                 }
             }
 
-            issueFound = false;
             return messages;
         }
     }

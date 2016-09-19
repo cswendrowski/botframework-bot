@@ -168,7 +168,7 @@
     <Compile Include="Models\Commit.cs" />
     <Compile Include="Modules\NinjectBotModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rules\NewlinesAroundElements.cs" />
+    <Compile Include="Rules\Sitecore\NewlinesAroundElements.cs" />
     <Compile Include="Rules\Sitecore\Brackets.cs" />
     <Compile Include="Rules\Sitecore\EndOfLine.cs" />
     <Compile Include="Rules\Rule.cs" />
