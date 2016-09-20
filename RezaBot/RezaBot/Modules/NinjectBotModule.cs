@@ -1,6 +1,6 @@
-﻿using Ninject.Modules;
+﻿using Ninject.Extensions.Conventions;
+using Ninject.Modules;
 using RezaBot.Rules;
-using RezaBot.Rules.Sitecore;
 using RezaBot.Services;
 
 namespace RezaBot.Modules
@@ -13,12 +13,14 @@ namespace RezaBot.Modules
 
             Bind<IGitService>().To<GithubService>();
 
-            // Rules
-            Bind<IRule>().To<Brackets>();
-            Bind<IRule>().To<EndOfLine>();
-            Bind<IRule>().To<ExtraNewLine>();
-            Bind<IRule>().To<Scss0px>();
-            Bind<IRule>().To<Whitespaces>();
+            // Binds all Rules
+            Kernel.Bind(x =>
+            {
+                x.FromAssemblyContaining<Rule>()
+                 .SelectAllClasses()
+                 .InheritedFrom<IRule>()
+                 .BindSingleInterface();
+            });
         }
     }
 }
