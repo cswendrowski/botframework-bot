@@ -2,10 +2,10 @@
 using RezaBot.Services;
 using System.Collections.Generic;
 
-namespace RezaBot.Rules.Sitecore
+namespace RezaBot.Rules
 {
     public abstract class Rule : IRule
     {
-        public abstract List<CodeComment> Evaluate(ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, out bool issueFound);
+        public abstract List<CodeComment> Evaluate(ChangedFile file, List<CodeLine> addedLines, out bool issueFound);
     }
 }

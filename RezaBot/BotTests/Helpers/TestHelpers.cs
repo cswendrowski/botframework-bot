@@ -2,7 +2,7 @@
 using Ninject;
 using RezaBot.Models;
 using RezaBot.Modules;
-using RezaBot.Rules.Sitecore;
+using RezaBot.Rules;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -30,18 +30,30 @@ namespace BotTests.Helpers
 
         public static ChangedFile CreateTestFile(string fileType, List<string> codeLines)
         {
-            return new ChangedFile()
+            return CreateTestFile("testFile", fileType, codeLines);
+        }
+
+        public static ChangedFile CreateTestFile(string fileName, string fileType, List<string> codeLines)
+        {
+            var file = new ChangedFile()
             {
-                FileName = "testFile." + fileType,
+                FileName = fileName + "." + fileType,
                 ChangedLines = codeLines.Select(x => new CodeLine(x)).ToList()
             };
+
+            for (int x = 0; x < file.ChangedLines.Count; x++)
+            {
+                file.ChangedLines[x].LineNumber = x;
+            }
+
+            return file;
         }
 
         public static void AssertFoundIssue(this Rule rule, ChangedFile file, List<CodeLine> addedLines = null, List<CodeLine> removedLines = null)
         {
             var foundIssue = false;
 
-            var messages = rule.Evaluate(file, addedLines, removedLines, out foundIssue);
+            var messages = rule.Evaluate(file, addedLines, out foundIssue);
 
             Assert.IsTrue(foundIssue);
             Assert.IsNotNull(messages);
@@ -53,7 +65,7 @@ namespace BotTests.Helpers
         {
             var foundIssue = false;
 
-            var messages = rule.Evaluate(file, addedLines, removedLines, out foundIssue);
+            var messages = rule.Evaluate(file, addedLines, out foundIssue);
 
             Assert.IsFalse(foundIssue);
             Assert.IsNotNull(messages);

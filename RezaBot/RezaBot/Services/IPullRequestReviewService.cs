@@ -1,9 +1,11 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
+using RezaBot.Models;
+using System.Collections.Generic;
 
 namespace RezaBot.Services
 {
     public interface IPullRequestReviewService
     {
-        void ReviewPullRequest(int prNumber, IDialogContext context = null);
+        List<CodeComment> ReviewPullRequest(int prNumber, IDialogContext context = null);
     }
 }

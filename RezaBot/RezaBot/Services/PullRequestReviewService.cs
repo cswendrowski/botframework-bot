@@ -20,14 +20,14 @@ namespace RezaBot.Services
             _rules = rules;
         }
 
-        public void ReviewPullRequest(int prNumber, IDialogContext context = null)
+        public List<CodeComment> ReviewPullRequest(int prNumber, IDialogContext context = null)
         {
             var files = _gitService.DownloadPrFiles(prNumber);
 
-            NitpickFiles(files, prNumber, context);
+            return NitpickFiles(files, prNumber, context);
         }
 
-        private void NitpickFiles(List<ChangedFile> files, int prNumber, IDialogContext context = null)
+        private List<CodeComment> NitpickFiles(List<ChangedFile> files, int prNumber, IDialogContext context = null)
         {
             _gitService.ConversationContext = context;
 
@@ -49,7 +49,7 @@ namespace RezaBot.Services
                 {
                     var ruleFoundIssue = false;
 
-                    messages.AddRange(rule.Evaluate(file, addedLines, removedLines, out ruleFoundIssue));
+                    messages.AddRange(rule.Evaluate(file, addedLines, out ruleFoundIssue));
 
                     if (ruleFoundIssue)
                     {
@@ -65,8 +65,14 @@ namespace RezaBot.Services
 
             if (!issueWasFound)
             {
+                messages.Add(new CodeComment
+                {
+                    Comment = "No issues found in this PR, good job!"
+                });
                 _gitService.AddGeneralComment("No issues found in this PR, good job!", prNumber);
             }
+
+            return messages;
         }
     }
 }

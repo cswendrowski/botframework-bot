@@ -9,7 +9,7 @@ namespace RezaBot.Rules.Sitecore
     /// </summary>
     public class EndOfLine : SitecoreBaseRule
     {
-        protected override List<CodeComment> Review(ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, out bool issueFound)
+        protected override List<CodeComment> Review(ChangedFile file, List<CodeLine> addedLines, out bool issueFound)
         {
             var messages = new List<CodeComment>();
             issueFound = false;
@@ -25,7 +25,7 @@ namespace RezaBot.Rules.Sitecore
 
                 issueFound = true;
             }
-            else if (removedLines.Any(x => x.Line.Contains("No newline at end of file")))
+            else if (file.ChangedLines.Where(x => x.WasDeleted).Any(x => x.Line.Contains("No newline at end of file")))
             {
                 messages.Add(new CodeComment
                 {

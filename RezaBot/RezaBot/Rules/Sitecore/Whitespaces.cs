@@ -5,7 +5,7 @@ namespace RezaBot.Rules.Sitecore
 {
     public class Whitespaces : SitecoreBaseRule
     {
-        protected override List<CodeComment> Review(ChangedFile file, List<CodeLine> addedLines, List<CodeLine> removedLines, out bool issueFound)
+        protected override List<CodeComment> Review(ChangedFile file, List<CodeLine> addedLines, out bool issueFound)
         {
             var messages = new List<CodeComment>();
             issueFound = false;
