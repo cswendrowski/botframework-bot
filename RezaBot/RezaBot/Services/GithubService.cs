@@ -36,7 +36,7 @@ namespace RezaBot.Services
 
             if (ConversationContext != null)
             {
-                await ConversationContext.PostAsync(string.Format("PR {0} - File {1} Line {2}: {3}", prNumber, file.FileName, line.LineNumber, message));
+                await ConversationContext.PostAsync(string.Format("File {1} Line {2}: {3}", prNumber, file.FileName, line.LineNumber, message));
                 return;
             }
 
@@ -54,7 +54,7 @@ namespace RezaBot.Services
 
             if (ConversationContext != null)
             {
-                await ConversationContext.PostAsync(string.Format("PR {0} - General Comment: {1}", prNumber, message));
+                await ConversationContext.PostAsync(string.Format("General Comment: {1}", prNumber, message));
                 return;
             }
 

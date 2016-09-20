@@ -17,7 +17,8 @@ namespace RezaBot.Dialogs
         [LuisIntent("")]
         public async Task None(IDialogContext context, LuisResult result)
         {
-            string message = $"Sorry I did not understand: " + string.Join(", ", result.Intents.Select(i => i.Intent));
+            string message = $"Sorry, I'm not sure what you want me to do. My currently available Intents are: "
+                + string.Join(", ", result.Intents.Select(i => i.Intent));
             await context.PostAsync(message);
             context.Wait(MessageReceived);
         }
@@ -44,7 +45,7 @@ namespace RezaBot.Dialogs
                     resume: AfterPRConfirm,
                     options: Enum.GetValues(typeof(PrReviewOptions)).Cast<PrReviewOptions>().ToArray(),
                     prompt: "Are you sure you want me to review PR " + number + "?",
-                    retry: "Didn't get that, sorry!",
+                    retry: "I'm not sure what option you selected, sorry!",
                     promptStyle: PromptStyle.Auto);
             }
             else
@@ -60,23 +61,24 @@ namespace RezaBot.Dialogs
             var confirm = await argument;
             var number = context.ConversationData.Get<int>("prNumber");
 
-            var kernel = new StandardKernel(new NinjectBotModule());
-            var reviewService = kernel.Get<IPullRequestReviewService>();
+            var reviewService = GetClass<IPullRequestReviewService>();
 
             switch (confirm)
             {
                 case PrReviewOptions.Yes:
-                    await context.PostAsync("Starting review of PR " + number + ".");
-                    reviewService.ReviewPullRequest(number);
+                    await context.PostAsync("I am starting my review of PR " + number + ".");
+                    var count = reviewService.ReviewPullRequest(number).Count;
+                    await context.PostAsync("I finished my review and left " + count +
+                        " comments, let me know if there's anything else I can do to help!");
                     break;
 
                 case PrReviewOptions.Preview:
-                    await context.PostAsync("Starting preview of PR " + number + ".");
+                    await context.PostAsync("Here is a preview of PR " + number + ":");
                     reviewService.ReviewPullRequest(number, context);
                     break;
 
                 case PrReviewOptions.No:
-                    await context.PostAsync("Did not review PR " + number + ".");
+                    await context.PostAsync("Sounds good, I will ignore PR " + number + " for now.");
                     break;
             }
 
@@ -96,6 +98,12 @@ namespace RezaBot.Dialogs
             }
             // Did not succeed
             return false;
+        }
+
+        private T GetClass<T>()
+        {
+            var kernel = new StandardKernel(new NinjectBotModule());
+            return kernel.Get<T>();
         }
     }
 }
