@@ -175,11 +175,11 @@
     <Compile Include="Rules\Sitecore\ExtraNewLine.cs" />
     <Compile Include="Rules\Sitecore\Scss0px.cs" />
     <Compile Include="Rules\Sitecore\SitecoreBaseRule.cs" />
-    <Compile Include="Rules\IRule.cs" />
+    <Compile Include="Interfaces\IRule.cs" />
     <Compile Include="Rules\Sitecore\Whitespaces.cs" />
     <Compile Include="Services\GithubService.cs" />
-    <Compile Include="Services\IGitService.cs" />
-    <Compile Include="Services\IPullRequestReviewService.cs" />
+    <Compile Include="Interfaces\IGitService.cs" />
+    <Compile Include="Interfaces\IPullRequestReviewService.cs" />
     <Compile Include="Services\PullRequestReviewService.cs" />
   </ItemGroup>
   <ItemGroup>
