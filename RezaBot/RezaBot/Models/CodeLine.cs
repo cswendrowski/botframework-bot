@@ -29,7 +29,7 @@ namespace RezaBot.Models
             }
             else if (line[0] == '-')
             {
-                WasAdded = false;
+                WasDeleted = true;
                 WasChanged = true;
                 Line = line.Substring(1, line.Length - 1);
             }

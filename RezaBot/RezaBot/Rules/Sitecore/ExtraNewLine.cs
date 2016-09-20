@@ -1,6 +1,5 @@
 ﻿using RezaBot.Models;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace RezaBot.Rules.Sitecore
 {
