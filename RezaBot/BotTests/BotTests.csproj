@@ -108,6 +108,7 @@
     <Compile Include="Helpers\TestHelpers.cs" />
     <Compile Include="Helpers\TestModule.cs" />
     <Compile Include="Rules\Sitecore\FullReviewTests.cs" />
+    <Compile Include="Rules\Sitecore\Scss0000Tests.cs" />
     <Compile Include="Rules\Sitecore\WhitespacesTests.cs" />
     <Compile Include="Rules\Sitecore\Scss0pxTests.cs" />
     <Compile Include="Rules\Sitecore\NewlinesAroundElementsTests.cs" />

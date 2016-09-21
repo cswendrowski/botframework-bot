@@ -168,6 +168,7 @@
     <Compile Include="Rules\Sitecore\Brackets.cs" />
     <Compile Include="Rules\Sitecore\EndOfLine.cs" />
     <Compile Include="Rules\Sitecore\ExtraNewLine.cs" />
+    <Compile Include="Rules\Sitecore\Scss0000.cs" />
     <Compile Include="Rules\Sitecore\Scss0px.cs" />
     <Compile Include="Rules\Sitecore\SitecoreBaseRule.cs" />
     <Compile Include="Rules\Sitecore\Whitespaces.cs" />
