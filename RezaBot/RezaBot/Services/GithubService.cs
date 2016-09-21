@@ -1,12 +1,10 @@
-﻿using Microsoft.Bot.Builder.Dialogs;
-using Octokit;
+﻿using Octokit;
+using PullRequestReviewService.Interfaces;
+using PullRequestReviewService.Models;
 using RestSharp;
-using RezaBot.Models;
-using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Web;
 
 namespace RezaBot.Services
 {
@@ -15,8 +13,6 @@ namespace RezaBot.Services
         protected string Token = ConfigurationManager.AppSettings["Github-Token"];
         protected string RepositoryName = ConfigurationManager.AppSettings["Repository-Name"];
         protected string RepositoryOwner = ConfigurationManager.AppSettings["Repository-Owner"];
-
-        public IDialogContext ConversationContext { get; set; }
 
         private GitHubClient GetClient()
         {
@@ -34,12 +30,6 @@ namespace RezaBot.Services
         {
             message = "@" + GetPrAuthor(prNumber) + " " + message;
 
-            if (ConversationContext != null)
-            {
-                await ConversationContext.PostAsync(string.Format("File {1} Line {2}: {3}", prNumber, file.FileName, line.LineNumber, message));
-                return;
-            }
-
             var github = GetClient();
             var client = github.PullRequest.Comment;
 
@@ -51,12 +41,6 @@ namespace RezaBot.Services
         public async void AddGeneralComment(string message, int prNumber)
         {
             message = "@" + GetPrAuthor(prNumber) + " " + message;
-
-            if (ConversationContext != null)
-            {
-                await ConversationContext.PostAsync(string.Format("General Comment: {1}", prNumber, message));
-                return;
-            }
 
             var github = GetClient();
             var client = github.Issue.Comment;
@@ -83,7 +67,7 @@ namespace RezaBot.Services
             request.AddUrlSegment("repo_name", RepositoryName);
             request.AddUrlSegment("pr_number", prNumber.ToString());
 
-            var response = client.Execute<List<Models.Commit>>(request);
+            var response = client.Execute<List<PullRequestReviewService.Models.Commit>>(request);
 
             return response.Data.Last().SHA;
         }

@@ -1,10 +1,5 @@
-﻿using RezaBot.Models;
-using RezaBot.Rules.Sitecore;
-using RezaBot.Services;
-using System;
+﻿using PullRequestReviewService.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace RezaBot.Rules
 {

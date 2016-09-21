@@ -1,6 +1,8 @@
 ﻿using Ninject.Extensions.Conventions;
 using Ninject.Modules;
-using RezaBot.Rules;
+using PullRequestReviewService.Interfaces;
+using PullRequestReviewService.Models;
+using PullRequestReviewService.Services;
 using RezaBot.Services;
 
 namespace RezaBot.Modules
@@ -9,14 +11,14 @@ namespace RezaBot.Modules
     {
         public override void Load()
         {
-            Bind<IPullRequestReviewService>().To<PullRequestReviewService>();
+            Bind<IPullRequestReviewService>().To<PrReviewService>();
 
             Bind<IGitService>().To<GithubService>();
 
             // Binds all Rules
             Kernel.Bind(x =>
             {
-                x.FromAssemblyContaining<Rule>()
+                x.FromThisAssembly()
                  .SelectAllClasses()
                  .InheritedFrom<IRule>()
                  .BindSingleInterface();

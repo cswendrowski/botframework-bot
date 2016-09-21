@@ -1,7 +1,5 @@
-﻿using Microsoft.Bot.Builder.Dialogs;
-using RezaBot.Models;
-using RezaBot.Services;
-using System;
+﻿using PullRequestReviewService.Interfaces;
+using PullRequestReviewService.Models;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -9,8 +7,6 @@ namespace BotTests.Fakes
 {
     public class FakeGitService : IGitService
     {
-        public IDialogContext ConversationContext { get; set; }
-
         private ChangedFile File { get; set; }
 
         public FakeGitService(ChangedFile file)

@@ -1,36 +1,31 @@
-﻿using Microsoft.Bot.Builder.Dialogs;
-using RezaBot.Models;
-using RezaBot.Rules;
+﻿using PullRequestReviewService.Interfaces;
+using PullRequestReviewService.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Web;
 
-namespace RezaBot.Services
+namespace PullRequestReviewService.Services
 {
-    public class PullRequestReviewService : IPullRequestReviewService
+    public class PrReviewService : IPullRequestReviewService
     {
         private IGitService _gitService;
         private IRule[] _rules;
 
-        public PullRequestReviewService(IGitService gitService, IRule[] rules)
+        public PrReviewService(IGitService gitService, IRule[] rules)
         {
             _gitService = gitService;
             _rules = rules;
         }
 
-        public List<CodeComment> ReviewPullRequest(int prNumber, IDialogContext context = null)
+        public List<CodeComment> ReviewPullRequest(int prNumber, bool outputMessagesToGitService = true)
         {
             var files = _gitService.DownloadPrFiles(prNumber);
 
-            return NitpickFiles(files, prNumber, context);
+            return NitpickFiles(files, prNumber, outputMessagesToGitService);
         }
 
-        private List<CodeComment> NitpickFiles(List<ChangedFile> files, int prNumber, IDialogContext context = null)
+        private List<CodeComment> NitpickFiles(List<ChangedFile> files, int prNumber, bool outputMessagesToGitService = true)
         {
-            _gitService.ConversationContext = context;
-
             var issueWasFound = false;
             var messages = new List<CodeComment>();
 
@@ -60,7 +55,10 @@ namespace RezaBot.Services
 
             foreach (var message in messages)
             {
-                _gitService.WriteComment(message.File, message.Line, message.Comment, prNumber);
+                if (outputMessagesToGitService)
+                {
+                    _gitService.WriteComment(message.File, message.Line, message.Comment, prNumber);
+                }
             }
 
             if (!issueWasFound)
@@ -69,7 +67,11 @@ namespace RezaBot.Services
                 {
                     Comment = "No issues found in this PR, good job!"
                 });
-                _gitService.AddGeneralComment("No issues found in this PR, good job!", prNumber);
+
+                if (outputMessagesToGitService)
+                {
+                    _gitService.AddGeneralComment("No issues found in this PR, good job!", prNumber);
+                }
             }
 
             return messages;

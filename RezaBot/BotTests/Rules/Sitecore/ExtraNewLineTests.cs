@@ -1,12 +1,7 @@
 ﻿using BotTests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Ninject;
-using RezaBot.Models;
-using RezaBot.Modules;
 using RezaBot.Rules.Sitecore;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
 namespace BotTests
 {

@@ -1,8 +1,7 @@
-﻿using RezaBot.Models;
-using RezaBot.Services;
+﻿using PullRequestReviewService.Models;
 using System.Collections.Generic;
 
-namespace RezaBot.Rules
+namespace PullRequestReviewService.Interfaces
 {
     public interface IRule
     {

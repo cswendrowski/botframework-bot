@@ -2,6 +2,7 @@
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Ninject;
+using PullRequestReviewService.Interfaces;
 using RezaBot.Modules;
 using RezaBot.Services;
 using System;
@@ -74,7 +75,13 @@ namespace RezaBot.Dialogs
 
                 case PrReviewOptions.Preview:
                     await context.PostAsync("Here is a preview of PR " + number + ":");
-                    reviewService.ReviewPullRequest(number, context);
+                    var messages = reviewService.ReviewPullRequest(number, false);
+
+                    foreach (var message in messages)
+                    {
+                        await context.PostAsync(message.ToString());
+                    }
+
                     break;
 
                 case PrReviewOptions.No:

@@ -1,8 +1,8 @@
-﻿using BotTests.Fakes;
-using Ninject.Extensions.Conventions;
+﻿using Ninject.Extensions.Conventions;
 using Ninject.Modules;
+using PullRequestReviewService.Interfaces;
+using PullRequestReviewService.Models;
 using RezaBot.Rules;
-using RezaBot.Services;
 
 namespace BotTests.Helpers
 {
@@ -13,7 +13,7 @@ namespace BotTests.Helpers
             // Binds all Rules
             Kernel.Bind(x =>
             {
-                x.FromAssemblyContaining<Rule>()
+                x.FromAssemblyContaining<SitecoreBaseRule>()
                  .SelectAllClasses()
                  .InheritedFrom<IRule>()
                  .BindSingleInterface();

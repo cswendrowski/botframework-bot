@@ -120,6 +120,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PullRequestReviewService\PullRequestReviewService.csproj">
+      <Project>{093DCC03-CF8E-43CA-9A43-BE4A19B75B91}</Project>
+      <Name>PullRequestReviewService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RezaBot\RezaBot.csproj">
       <Project>{a8ba1066-5695-4d71-abb4-65e5a5e0c3d4}</Project>
       <Name>RezaBot</Name>

@@ -1,13 +1,10 @@
-﻿using Microsoft.Bot.Builder.Dialogs;
-using RezaBot.Models;
+﻿using PullRequestReviewService.Models;
 using System.Collections.Generic;
 
-namespace RezaBot.Services
+namespace PullRequestReviewService.Interfaces
 {
     public interface IGitService
     {
-        IDialogContext ConversationContext { get; set; }
-
         void AddGeneralComment(string message, int prNumber);
 
         List<ChangedFile> DownloadPrFiles(int prNumber);

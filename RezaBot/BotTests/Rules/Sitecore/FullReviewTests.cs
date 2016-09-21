@@ -2,10 +2,9 @@
 using BotTests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Ninject;
-using RezaBot.Models;
-using RezaBot.Rules;
-using RezaBot.Rules.Sitecore;
-using RezaBot.Services;
+using PullRequestReviewService.Interfaces;
+using PullRequestReviewService.Models;
+using PullRequestReviewService.Services;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -101,7 +100,7 @@ namespace BotTests
 
         private IPullRequestReviewService GetReviewService(ChangedFile file)
         {
-            return new PullRequestReviewService(new FakeGitService(file), GetAllBoundRules().ToArray());
+            return new PrReviewService(new FakeGitService(file), GetAllBoundRules().ToArray());
         }
 
         private IEnumerable<IRule> GetAllBoundRules()

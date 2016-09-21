@@ -1,4 +1,4 @@
-﻿using RezaBot.Models;
+﻿using PullRequestReviewService.Models;
 using System.Collections.Generic;
 
 namespace RezaBot.Rules.Sitecore

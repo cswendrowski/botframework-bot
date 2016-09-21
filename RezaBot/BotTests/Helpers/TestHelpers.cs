@@ -1,8 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Ninject;
-using RezaBot.Models;
+using PullRequestReviewService.Models;
 using RezaBot.Modules;
-using RezaBot.Rules;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
