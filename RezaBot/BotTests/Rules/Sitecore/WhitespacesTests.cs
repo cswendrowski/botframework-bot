@@ -25,6 +25,18 @@ namespace BotTests
         }
 
         [TestMethod]
+        public void WhitespacesAroundSemicolon()
+        {
+            var file = TestHelpers.CreateTestFile("cs", "+ return ;");
+
+            GetRule().AssertFoundIssue(file, file.ChangedLines);
+
+            file = TestHelpers.CreateTestFile("cs", "+ return; ");
+
+            GetRule().AssertFoundIssue(file, file.ChangedLines);
+        }
+
+        [TestMethod]
         public void WhitespacesInMethods()
         {
             var file = TestHelpers.CreateTestFile("cs", "+ void  TestMethod()");

@@ -24,6 +24,28 @@ namespace RezaBot.Rules.Sitecore
 
                     issueFound = true;
                 }
+                else if (changedLine.Line.Contains(" ;"))
+                {
+                    messages.Add(new CodeComment
+                    {
+                        File = file,
+                        Line = changedLine,
+                        Comment = "Please remove extra white spaces before the `;`, thanks!"
+                    });
+
+                    issueFound = true;
+                }
+                else if (changedLine.Line.Contains("; "))
+                {
+                    messages.Add(new CodeComment
+                    {
+                        File = file,
+                        Line = changedLine,
+                        Comment = "Please remove extra white spaces after the `;`, thanks!"
+                    });
+
+                    issueFound = true;
+                }
             }
 
             return messages;
