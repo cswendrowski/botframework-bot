@@ -5,6 +5,14 @@ namespace RezaBot.Rules.Sitecore
 {
     public class Whitespaces : SitecoreBaseRule
     {
+        public Whitespaces() : base()
+        {
+            FileTypesToCheck.Add("cs");
+            FileTypesToCheck.Add("cshtml");
+            FileTypesToCheck.Add("js");
+            FileTypesToCheck.Add("scss");
+        }
+
         protected override List<CodeComment> Review(ChangedFile file, List<CodeLine> addedLines, out bool issueFound)
         {
             var messages = new List<CodeComment>();

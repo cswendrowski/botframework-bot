@@ -6,6 +6,14 @@ namespace RezaBot.Rules
 {
     public class NewlinesAroundElements : SitecoreBaseRule
     {
+        public NewlinesAroundElements() : base()
+        {
+            FileTypesToCheck.Add("cs");
+            FileTypesToCheck.Add("cshtml");
+            FileTypesToCheck.Add("js");
+            FileTypesToCheck.Add("scss");
+        }
+
         protected override List<CodeComment> Review(ChangedFile file, List<CodeLine> addedLines, out bool issueFound)
         {
             var messages = new List<CodeComment>();
@@ -13,8 +21,7 @@ namespace RezaBot.Rules
 
             foreach (var changedLine in file.ChangedLines)
             {
-                // Only check newlines around open / closing tags in written files
-                if (file.FileType != "item" && changedLine.IsNewline)
+                if (changedLine.IsNewline)
                 {
                     var changedLineIndex = file.ChangedLines.IndexOf(changedLine);
 

@@ -9,6 +9,14 @@ namespace RezaBot.Rules.Sitecore
     /// </summary>
     public class EndOfLine : SitecoreBaseRule
     {
+        public EndOfLine() : base()
+        {
+            FileTypesToCheck.Add("cs");
+            FileTypesToCheck.Add("cshtml");
+            FileTypesToCheck.Add("js");
+            FileTypesToCheck.Add("scss");
+        }
+
         protected override List<CodeComment> Review(ChangedFile file, List<CodeLine> addedLines, out bool issueFound)
         {
             var messages = new List<CodeComment>();

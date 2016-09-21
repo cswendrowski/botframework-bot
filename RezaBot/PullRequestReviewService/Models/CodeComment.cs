@@ -10,7 +10,25 @@
 
         public override string ToString()
         {
-            return string.Format("File {0} Line {1}: {2}", File.FileName, Line.LineNumber, Comment);
+            var toReturn = string.Empty;
+
+            if (File != null)
+            {
+                toReturn += "File " + File.FileName;
+            }
+
+            if (Line != null)
+            {
+                toReturn += " Line " + Line.LineNumber;
+            }
+
+            // No issues found comment will trigger this
+            if (string.IsNullOrEmpty(toReturn))
+            {
+                return Comment;
+            }
+
+            return toReturn + ": " + Comment;
         }
     }
 }
