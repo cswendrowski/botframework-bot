@@ -107,6 +107,45 @@ namespace RezaBot.Dialogs
             return false;
         }
 
+        [LuisIntent("View Hivecast")]
+        public async Task ViewHivecast(IDialogContext context, LuisResult result)
+        {
+            int number;
+            var name = context.ConversationData.Get<string>("rmName");
+
+            if (string.IsNullOrEmpty(name))
+            {
+                PromptDialog.Text(context, AfterGetName, "What is your name, as displayed in RM-ify?");
+            }
+            else
+            {
+                var forecast = RmService.GetForecastForSherpa(name);
+
+                foreach (var message in forecast.Where(x => !string.IsNullOrEmpty(x.Forecast.ElementAt(2))))
+                {
+                    await context.PostAsync(message.ToString());
+                }
+
+                context.Wait(MessageReceived);
+            }
+        }
+
+        public async Task AfterGetName(IDialogContext context, IAwaitable<string> argument)
+        {
+            var name = await argument;
+
+            context.ConversationData.SetValue("rmName", name);
+
+            var forecast = RmService.GetForecastForSherpa(name);
+
+            foreach (var message in forecast.Where(x => !string.IsNullOrEmpty(x.Forecast.ElementAt(2))))
+            {
+                await context.PostAsync(message.GetForecastMessageForWeek(2));
+            }
+
+            context.Wait(MessageReceived);
+        }
+
         private T GetClass<T>()
         {
             var kernel = new StandardKernel(new NinjectBotModule());

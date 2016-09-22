@@ -107,6 +107,7 @@
     <Compile Include="Fakes\FakeGitService.cs" />
     <Compile Include="Helpers\TestHelpers.cs" />
     <Compile Include="Helpers\TestModule.cs" />
+    <Compile Include="RM\HivecastTests.cs" />
     <Compile Include="Rules\Sitecore\FullReviewTests.cs" />
     <Compile Include="Rules\Sitecore\Scss0000Tests.cs" />
     <Compile Include="Rules\Sitecore\WhitespacesTests.cs" />
