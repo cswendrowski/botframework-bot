@@ -20,8 +20,18 @@ namespace RezaBot.Services
 
         public static List<RmProjectForecast> GetForecastForSherpa(string sherpa)
         {
+            if (string.IsNullOrEmpty(sherpa))
+            {
+                return new List<RmProjectForecast>();
+            }
+
             var rmData = GetRmData();
             rmData.Results = rmData.Results.Where(x => x.Key.Contains(sherpa)).ToDictionary(x => x.Key, x => x.Value);
+
+            if (!rmData.Results.Any())
+            {
+                return new List<RmProjectForecast>();
+            }
 
             return rmData.Results.Values.First().Select(project => new RmProjectForecast(project)).ToList();
         }

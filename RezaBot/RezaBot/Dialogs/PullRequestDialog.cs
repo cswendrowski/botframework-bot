@@ -110,8 +110,8 @@ namespace RezaBot.Dialogs
         [LuisIntent("View Hivecast")]
         public async Task ViewHivecast(IDialogContext context, LuisResult result)
         {
-            int number;
-            var name = context.ConversationData.Get<string>("rmName");
+            string name;
+            context.ConversationData.TryGetValue("rmName", out name);
 
             if (string.IsNullOrEmpty(name))
             {
