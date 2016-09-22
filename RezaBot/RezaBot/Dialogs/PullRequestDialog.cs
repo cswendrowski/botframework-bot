@@ -123,7 +123,7 @@ namespace RezaBot.Dialogs
 
                 foreach (var message in forecast.Where(x => !string.IsNullOrEmpty(x.Forecast.ElementAt(2))))
                 {
-                    await context.PostAsync(message.ToString());
+                    await context.PostAsync(message.GetForecastMessageForWeek(2));
                 }
 
                 context.Wait(MessageReceived);
