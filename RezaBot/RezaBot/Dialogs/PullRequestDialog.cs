@@ -6,6 +6,7 @@ using PullRequestReviewService.Interfaces;
 using RezaBot.Modules;
 using RezaBot.Services;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,30 +32,65 @@ namespace RezaBot.Dialogs
             No
         }
 
-        [LuisIntent("Analyze PR")]
-        public async Task AnalyzePR(IDialogContext context, LuisResult result)
+        [LuisIntent("Greeting")]
+        public async Task Greeting(IDialogContext context, LuisResult result)
         {
-            int number;
-            var message = string.Empty;
+            string message = "Hello! I could really go for some fish right now. Or whiskey..";
+            await context.PostAsync(message);
+            context.Wait(MessageReceived);
+        }
 
-            if (TryFindPrNumber(result, out number))
+        [LuisIntent("Taco Tuesday")]
+        public async Task Tacos(IDialogContext context, LuisResult result)
+        {
+            var today = GetCstNow();
+
+            string message;
+
+            if (today.DayOfWeek == DayOfWeek.Tuesday)
             {
-                context.ConversationData.SetValue("prNumber", number);
-
-                PromptDialog.Choice(
-                    context: context,
-                    resume: AfterPRConfirm,
-                    options: Enum.GetValues(typeof(PrReviewOptions)).Cast<PrReviewOptions>().ToArray(),
-                    prompt: "Are you sure you want me to review PR " + number + "?",
-                    retry: "I'm not sure what option you selected, sorry!",
-                    promptStyle: PromptStyle.Auto);
+                message = "It's Tuesday, which means TACOS! I love fish tacos <3";
+            }
+            else if (today.DayOfWeek == DayOfWeek.Friday)
+            {
+                message = "No Tacos today, but it's Whiskey Friday at least! Drinks at 4!";
             }
             else
             {
-                message = $"I'm sorry, please include a PR number that you want me to analyze. Thanks!";
-                await context.PostAsync(message);
-                context.Wait(MessageReceived);
+                message = "It's not Taco Tuesday :(";
             }
+
+            await context.PostAsync(message);
+            context.Wait(MessageReceived);
+        }
+
+        public static DateTime GetCstNow()
+        {
+            var timeUtc = DateTime.UtcNow;
+            try
+            {
+                var cstZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
+                var cstTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, cstZone);
+                return cstTime;
+            }
+            catch (TimeZoneNotFoundException)
+            {
+                Debug.WriteLine("The registry does not define the Central Standard Time zone.");
+            }
+            catch (InvalidTimeZoneException)
+            {
+                Debug.WriteLine("Registry data on the Central Standard Time zone has been corrupted.");
+            }
+            return DateTime.Now;
+        }
+
+
+        [LuisIntent("Analyze PR")]
+        public async Task AnalyzePR(IDialogContext context, LuisResult result)
+        {
+            var message = $"I'm sorry, PR reviewing has been disabled for now :(";
+            await context.PostAsync(message);
+            context.Wait(MessageReceived);
         }
 
         public async Task AfterPRConfirm(IDialogContext context, IAwaitable<PrReviewOptions> argument)
@@ -121,9 +157,9 @@ namespace RezaBot.Dialogs
             {
                 var forecast = RmService.GetForecastForSherpa(name);
 
-                foreach (var message in forecast.Where(x => !string.IsNullOrEmpty(x.Forecast.ElementAt(2))))
+                foreach (var msg in forecast.Select(message => message.GetForecastMessageForWeek(2)).Where(msg => !string.IsNullOrEmpty(msg)))
                 {
-                    await context.PostAsync(message.GetForecastMessageForWeek(2));
+                    await context.PostAsync(msg.Replace(name, "you").Replace("has", "have"));
                 }
 
                 context.Wait(MessageReceived);
@@ -138,9 +174,9 @@ namespace RezaBot.Dialogs
 
             var forecast = RmService.GetForecastForSherpa(name);
 
-            foreach (var message in forecast.Where(x => !string.IsNullOrEmpty(x.Forecast.ElementAt(2))))
+            foreach (var msg in forecast.Select(message => message.GetForecastMessageForWeek(2)).Where(msg => !string.IsNullOrEmpty(msg)))
             {
-                await context.PostAsync(message.GetForecastMessageForWeek(2));
+                await context.PostAsync(msg.Replace(name, "you").Replace("has", "have"));
             }
 
             context.Wait(MessageReceived);

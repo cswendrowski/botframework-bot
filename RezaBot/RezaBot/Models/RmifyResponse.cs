@@ -11,6 +11,6 @@ namespace RezaBot.Models
 
         public List<string> Competency_List { get; set; }
 
-        public Dictionary<string, List<List<string>>> Results { get; set; }
+        public Dictionary<string, Sherpa> Sherpas { get; set; }
     }
 }

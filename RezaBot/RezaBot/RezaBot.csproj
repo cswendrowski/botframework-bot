@@ -164,6 +164,7 @@
     </Compile>
     <Compile Include="Models\RmifyResponse.cs" />
     <Compile Include="Models\RmProjectForecast.cs" />
+    <Compile Include="Models\Sherpa.cs" />
     <Compile Include="Modules\NinjectBotModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rules\Sitecore\NewlinesAroundElements.cs" />
