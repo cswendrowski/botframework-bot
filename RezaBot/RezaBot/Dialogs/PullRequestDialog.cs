@@ -156,10 +156,22 @@ namespace RezaBot.Dialogs
             else
             {
                 var forecast = RmService.GetForecastForSherpa(name);
+                var today = GetCstNow();
+                var nextWeek = today.AddDays(7);
+                var weekEnding = nextWeek.AddDays((-1) * (int)nextWeek.DayOfWeek).AddDays(5);
 
                 foreach (var msg in forecast.Select(message => message.GetForecastMessageForWeek(2)).Where(msg => !string.IsNullOrEmpty(msg)))
                 {
-                    await context.PostAsync(msg.Replace(name, "you").Replace("has", "have"));
+                    var updatedMsg = msg.Replace(name, "you").Replace("has", "have");
+                    if (msg.Contains("total"))
+                    {
+                        await context.PostAsync(
+                            "For week ending " + weekEnding.ToString("MM/dd") + ", " + updatedMsg);
+                    }
+                    else
+                    {
+                        await context.PostAsync(updatedMsg);
+                    }
                 }
 
                 context.Wait(MessageReceived);
@@ -173,10 +185,22 @@ namespace RezaBot.Dialogs
             context.ConversationData.SetValue("rmName", name);
 
             var forecast = RmService.GetForecastForSherpa(name);
+            var today = GetCstNow();
+            var nextWeek = today.AddDays(7);
+            var weekEnding = nextWeek.AddDays((-1)*(int) nextWeek.DayOfWeek).AddDays(5);
 
             foreach (var msg in forecast.Select(message => message.GetForecastMessageForWeek(2)).Where(msg => !string.IsNullOrEmpty(msg)))
             {
-                await context.PostAsync(msg.Replace(name, "you").Replace("has", "have"));
+                var updatedMsg = msg.Replace(name, "you").Replace("has", "have");
+                if (msg.Contains("total"))
+                {
+                    await context.PostAsync(
+                        "For week ending " + weekEnding.ToString("MM/dd") + ", " + updatedMsg);
+                }
+                else
+                {
+                    await context.PostAsync(updatedMsg);
+                }
             }
 
             context.Wait(MessageReceived);
