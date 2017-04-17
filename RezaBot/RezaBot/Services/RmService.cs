@@ -35,5 +35,20 @@ namespace RezaBot.Services
 
             return rmData.Sherpas.First().Value.Forecasts;
         }
+
+        public static double GetPtoHoursForYear(string sherpa)
+        {
+            if (string.IsNullOrEmpty(sherpa))
+            {
+                return -1;
+            }
+
+            var client = new RestClient("http://rm-api.azurewebsites.net");
+            var request = new RestRequest("api/netsuite/getptohoursforsherpa", Method.GET);
+            request.AddParameter("name", sherpa);
+            var response = client.Execute<double>(request);
+
+            return response.Data;
+        }
     }
 }

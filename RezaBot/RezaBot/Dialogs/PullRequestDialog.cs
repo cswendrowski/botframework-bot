@@ -206,6 +206,51 @@ namespace RezaBot.Dialogs
             context.Wait(MessageReceived);
         }
 
+        [LuisIntent("PTO")]
+        public async Task ViewPtoHours(IDialogContext context, LuisResult result)
+        {
+            string name;
+            context.ConversationData.TryGetValue("netsuiteName", out name);
+
+            if (string.IsNullOrEmpty(name))
+            {
+                PromptDialog.Text(context, AfterGetNetsuiteName, "What is your name, as displayed in Netsuite?");
+            }
+            else
+            {
+                var hours = RmService.GetPtoHoursForYear(name);
+                if (hours < 0)
+                {
+                    await context.PostAsync("I could not find you in Netsuite, sorry!");
+                }
+                else
+                {
+                    await context.PostAsync("You have used " + hours + " hours (" + hours / 8 + " days) this year");
+                }
+
+                context.Wait(MessageReceived);
+            }
+        }
+
+        public async Task AfterGetNetsuiteName(IDialogContext context, IAwaitable<string> argument)
+        {
+            var name = await argument;
+
+            context.ConversationData.SetValue("netsuiteName", name);
+
+            var hours = RmService.GetPtoHoursForYear(name);
+            if (hours < 0)
+            {
+                await context.PostAsync("I could not find you in Netsuite, sorry!");
+            }
+            else
+            {
+                await context.PostAsync("You have used " + hours + " hours (" + hours / 8 + " days) this year");
+            }
+
+            context.Wait(MessageReceived);
+        }
+
         private T GetClass<T>()
         {
             var kernel = new StandardKernel(new NinjectBotModule());
